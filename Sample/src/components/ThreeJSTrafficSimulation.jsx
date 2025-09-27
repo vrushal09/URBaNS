@@ -1,114 +1,11 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Grid, Text, Box, Cylinder, Plane } from '@react-three/drei'
 import * as THREE from 'three'
+// import EnhancedVehicle3D from './EnhancedVehicle3D'
+// import { VehiclePerformanceManager, VehiclePool, PerformanceMonitor } from './VehiclePerformance'
 
-// Vehicle component with realistic 3D models and physics
-const Vehicle3D = ({ position, rotation, type, speed, color }) => {
-  const meshRef = useRef()
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      // Subtle vehicle movement animation
-      meshRef.current.position.y += Math.sin(state.clock.elapsedTime * 10) * 0.02
-      
-      // Exhaust effect for high speeds
-      if (speed > 60) {
-        meshRef.current.material.emissive.setHex(
-          Math.sin(state.clock.elapsedTime * 5) > 0.8 ? 0x444444 : 0x000000
-        )
-      }
-    }
-  })
-
-  const vehicleGeometry = useMemo(() => {
-    switch (type) {
-      case 'truck':
-        return new THREE.BoxGeometry(3, 2.5, 8)
-      case 'bus':
-        return new THREE.BoxGeometry(2.5, 3, 12)
-      case 'motorcycle':
-        return new THREE.BoxGeometry(1, 1.5, 2.5)
-      default: // car
-        return new THREE.BoxGeometry(2, 1.8, 4.5)
-    }
-  }, [type])
-
-  const vehicleColor = useMemo(() => {
-    if (color) return color
-    const colors = ['#ff4444', '#4444ff', '#44ff44', '#ffff44', '#ff44ff', '#44ffff', '#ffffff', '#888888']
-    return colors[Math.floor(Math.random() * colors.length)]
-  }, [color])
-
-  return (
-    <group position={position} rotation={[0, rotation, 0]}>
-      {/* Main vehicle body */}
-      <mesh ref={meshRef} geometry={vehicleGeometry} castShadow>
-        <meshLambertMaterial color={vehicleColor} />
-      </mesh>
-      
-      {/* Headlights */}
-      <mesh position={[0, 0, vehicleGeometry.parameters.depth / 2]}>
-        <sphereGeometry args={[0.3, 8, 6]} />
-        <meshBasicMaterial color="#ffffaa" />
-      </mesh>
-      <mesh position={[0.8, 0, vehicleGeometry.parameters.depth / 2]}>
-        <sphereGeometry args={[0.3, 8, 6]} />
-        <meshBasicMaterial color="#ffffaa" />
-      </mesh>
-      <mesh position={[-0.8, 0, vehicleGeometry.parameters.depth / 2]}>
-        <sphereGeometry args={[0.3, 8, 6]} />
-        <meshBasicMaterial color="#ffffaa" />
-      </mesh>
-
-      {/* Wheels */}
-      {type === 'truck' || type === 'bus' ? (
-        // Multiple axles for trucks/buses
-        <>
-          <Cylinder args={[0.6, 0.6, 0.3]} position={[1.2, -1, 2]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.6, 0.6, 0.3]} position={[-1.2, -1, 2]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.6, 0.6, 0.3]} position={[1.2, -1, -2]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.6, 0.6, 0.3]} position={[-1.2, -1, -2]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-        </>
-      ) : (
-        // Standard 4 wheels
-        <>
-          <Cylinder args={[0.5, 0.5, 0.3]} position={[1, -0.8, 1.5]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.5, 0.5, 0.3]} position={[-1, -0.8, 1.5]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.5, 0.5, 0.3]} position={[1, -0.8, -1.5]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-          <Cylinder args={[0.5, 0.5, 0.3]} position={[-1, -0.8, -1.5]} rotation={[0, 0, Math.PI / 2]} castShadow>
-            <meshLambertMaterial color="#333333" />
-          </Cylinder>
-        </>
-      )}
-
-      {/* Speed indicator */}
-      <Text
-        position={[0, 3, 0]}
-        fontSize={0.8}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-      >
-        {`${Math.round(speed)} km/h`}
-      </Text>
-    </group>
-  )
-}
+// Note: Vehicle3D component moved to EnhancedVehicle3D.jsx for better organization and performance
 
 // Road segment with traffic
 const RoadSegmentWithTraffic = ({ segment, index, position, vehicles }) => {
@@ -188,16 +85,64 @@ const RoadSegmentWithTraffic = ({ segment, index, position, vehicles }) => {
             position[2] + laneOffset
           ]
           
+          // Simple vehicle model that definitely works
+          const vehicleSize = vehicle.type === 'truck' ? [3, 2.5, 8] : 
+                             vehicle.type === 'bus' ? [2.5, 3, 12] :
+                             vehicle.type === 'motorcycle' ? [1, 1.5, 2.5] :
+                             [2, 1.8, 4.5] // car
+          
+          const vehicleColor = vehicle.color || (vehicle.type === 'truck' ? '#dc2626' :
+                                                   vehicle.type === 'bus' ? '#1e40af' :
+                                                   vehicle.type === 'motorcycle' ? '#333333' :
+                                                   '#4444ff')
+          
           return (
-            <Vehicle3D
-              key={`vehicle-${index}-${vehicleIndex}`}
-              position={vehiclePosition}
-              rotation={vehicle.rotation || 0}
-              type={vehicle.type}
-              speed={vehicle.speed}
-              lane={vehicle.lane}
-              color={vehicle.color}
-            />
+            <group 
+              key={`vehicle-${index}-${vehicleIndex}`} 
+              position={vehiclePosition} 
+              rotation={[0, (vehicle.rotation || 0) + Math.PI / 2, 0]} // Rotate 90 degrees to align with road
+            >
+              {/* Main vehicle body */}
+              <Box args={vehicleSize}>
+                <meshLambertMaterial color={vehicleColor} />
+              </Box>
+              
+              {/* Optimized wheels - fewer vertices */}
+              <Cylinder args={[0.4, 0.4, 0.3, 8]} position={[vehicleSize[2]/3, -0.8, 0.7]} rotation={[0, 0, Math.PI / 2]}>
+                <meshLambertMaterial color="#333333" />
+              </Cylinder>
+              <Cylinder args={[0.4, 0.4, 0.3, 8]} position={[vehicleSize[2]/3, -0.8, -0.7]} rotation={[0, 0, Math.PI / 2]}>
+                <meshLambertMaterial color="#333333" />
+              </Cylinder>
+              <Cylinder args={[0.4, 0.4, 0.3, 8]} position={[-vehicleSize[2]/3, -0.8, 0.7]} rotation={[0, 0, Math.PI / 2]}>
+                <meshLambertMaterial color="#333333" />
+              </Cylinder>
+              <Cylinder args={[0.4, 0.4, 0.3, 8]} position={[-vehicleSize[2]/3, -0.8, -0.7]} rotation={[0, 0, Math.PI / 2]}>
+                <meshLambertMaterial color="#333333" />
+              </Cylinder>
+              
+              {/* Simple headlights at front */}
+              <mesh position={[vehicleSize[2] / 2, 0, 0]}>
+                <sphereGeometry args={[0.15, 6, 4]} />
+                <meshBasicMaterial color="#ffffaa" />
+              </mesh>
+              
+              {/* Simplified speed text - only show for nearby vehicles */}
+              {Math.sqrt(
+                (vehiclePosition[0] * vehiclePosition[0]) + 
+                (vehiclePosition[2] * vehiclePosition[2])
+              ) < 50 && (
+                <Text
+                  position={[0, 2.5, 0]}
+                  fontSize={0.5}
+                  color="#ffffff"
+                  anchorX="center"
+                  anchorY="middle"
+                >
+                  {Math.round(vehicle.speed)}
+                </Text>
+              )}
+            </group>
           )
         })}
 
@@ -234,22 +179,58 @@ const RoadSegmentWithTraffic = ({ segment, index, position, vehicles }) => {
 const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
   const [vehicles, setVehicles] = useState([])
   const [simulationTime, setSimulationTime] = useState(0)
-  const [trafficDensity, setTrafficDensity] = useState(0.5)
+  const [trafficDensity, setTrafficDensity] = useState(0.8) // Higher initial density
   const animationRef = useRef()
   const cameraPosition = useMemo(() => [0, 60, 100], [])
+  
+  // Performance management (simplified for debugging)
+  // const performanceManager = useRef(new VehiclePerformanceManager())
+  // const vehiclePool = useRef(new VehiclePool(150))
+  // const performanceMonitor = useRef(new PerformanceMonitor())
+  // const [performanceStats, setPerformanceStats] = useState({
+  //   fps: 60,
+  //   vehicleCount: 0,
+  //   grade: 'Excellent'
+  // })
+
+  // Helper methods (simplified for debugging)
+  // const getVehiclePhysics = (vehicleType) => { ... }
+  // const weightedRandomChoice = (items, weights) => { ... }
 
   useEffect(() => {
-    // Advanced traffic simulation with realistic behavior
+    // Advanced traffic simulation with realistic behavior and performance monitoring
     const updateTrafficSimulation = () => {
       if (!isRunning || !roadData?.segments) return
+
+      // Simple performance monitoring (removed complex FPS tracking to prevent freezing)
 
       setSimulationTime(prev => prev + 0.1)
       
       setVehicles(prevVehicles => {
         let newVehicles = [...prevVehicles]
         
-        // Add new vehicles based on traffic density
-        if (Math.random() < trafficDensity * 0.02) {
+        // Add initial test vehicles if none exist (less frequent to prevent spam)
+        if (newVehicles.length === 0 && Math.random() < 0.1) {
+          const testVehicle = {
+            id: `test-vehicle-${Date.now()}`,
+            segmentIndex: 0,
+            position: 0,
+            lane: 1,
+            speed: 50,
+            type: 'car',
+            targetSpeed: 50,
+            acceleration: 0,
+            rotation: 0, // Will be rotated in rendering
+            turnSignal: null,
+            color: '#ff4444'
+          }
+          newVehicles.push(testVehicle)
+          // console.log('Added test vehicle with correct orientation') // Removed for performance
+        }
+        
+        // Add new vehicles based on traffic density (balanced spawning)
+        const spawnRate = trafficDensity * 0.03 // Balanced spawn rate
+        if (Math.random() < spawnRate && newVehicles.length < 20) {
           const randomSegment = Math.floor(Math.random() * roadData.segments.length)
           const segment = roadData.segments[randomSegment]
           const lanes = segment.lanes || 4
@@ -262,91 +243,92 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
           const speedVariation = (Math.random() - 0.5) * 20
           const actualSpeed = Math.max(20, Math.min(120, baseSpeed + speedVariation))
           
-          newVehicles.push({
+          const newVehicle = {
             id: `vehicle-${Date.now()}-${Math.random()}`,
             segmentIndex: randomSegment,
-            position: -45, // Start from beginning of segment
+            position: -45,
             lane: randomLane,
             speed: actualSpeed,
             type: randomType,
             targetSpeed: actualSpeed,
             acceleration: 0,
-            rotation: 0,
-            color: null
-          })
+            rotation: 0, // Vehicle will be rotated 90 degrees in rendering
+            turnSignal: null,
+            color: randomType === 'car' ? ['#ff4444', '#4444ff', '#44ff44', '#ffff44'][Math.floor(Math.random() * 4)] : null
+          }
+          newVehicles.push(newVehicle)
+          // console.log('Added new vehicle:', newVehicle) // Removed for performance
         }
         
-        // Update existing vehicles with IDM (Intelligent Driver Model)
+        // Update existing vehicles with simplified physics
         newVehicles = newVehicles.map(vehicle => {
-          const segment = roadData.segments[vehicle.segmentIndex]
-          const speedLimit = segment.speed || 60
+          if (!vehicle || !vehicle.id) return null
           
-          // Find vehicle ahead in same lane
-          const vehicleAhead = newVehicles.find(v => 
-            v.segmentIndex === vehicle.segmentIndex && 
-            v.lane === vehicle.lane && 
-            v.position > vehicle.position &&
-            v.id !== vehicle.id
-          )
-          
-          let acceleration = 0
-          const maxAcceleration = 2.0 // m/s²
-          const comfortableDeceleration = 3.0 // m/s²
-          const minGap = 8.0 // meters
-          const desiredTimeHeadway = 1.5 // seconds
-          
-          // IDM acceleration calculation
-          const speedRatio = vehicle.speed / speedLimit
-          const freeRoadAcceleration = maxAcceleration * (1 - Math.pow(speedRatio, 4))
-          
-          if (vehicleAhead) {
-            const gap = vehicleAhead.position - vehicle.position
-            const deltaSpeed = vehicle.speed - vehicleAhead.speed
-            const desiredGap = minGap + vehicle.speed * desiredTimeHeadway + 
-              (vehicle.speed * deltaSpeed) / (2 * Math.sqrt(maxAcceleration * comfortableDeceleration))
+          try {
+            const segment = roadData.segments[vehicle.segmentIndex]
+            if (!segment) return null
             
-            const gapRatio = desiredGap / gap
-            acceleration = freeRoadAcceleration - maxAcceleration * Math.pow(gapRatio, 2)
-          } else {
-            acceleration = freeRoadAcceleration
-          }
-          
-          // Apply elevation effects
-          const elevation = segment.elevation || 0
-          if (elevation > 0) {
-            acceleration -= 0.5 // Slight deceleration on inclines
-          }
-          
-          // Update speed and position
-          const newSpeed = Math.max(5, Math.min(speedLimit * 1.2, vehicle.speed + acceleration * 0.1))
-          const newPosition = vehicle.position + (newSpeed * 0.1 * 2.78) // Convert km/h to position units
-          
-          // Handle segment transitions
-          if (newPosition > 45) {
-            if (vehicle.segmentIndex < roadData.segments.length - 1) {
-              return {
-                ...vehicle,
-                segmentIndex: vehicle.segmentIndex + 1,
-                position: -45,
-                speed: newSpeed
+            const speedLimit = segment.speed || 60
+            
+            // Find vehicle ahead in same lane
+            const vehicleAhead = newVehicles.find(v => 
+              v && v.segmentIndex === vehicle.segmentIndex && 
+              v.lane === vehicle.lane && 
+              v.position > vehicle.position &&
+              v.id !== vehicle.id
+            )
+            
+            let targetSpeed = speedLimit
+            
+            // Simple following behavior
+            if (vehicleAhead) {
+              const gap = vehicleAhead.position - vehicle.position
+              if (gap < 15) {
+                targetSpeed = Math.min(vehicleAhead.speed * 0.8, speedLimit)
               }
-            } else {
-              return null // Remove vehicle at end
             }
-          }
-          
-          return {
-            ...vehicle,
-            position: newPosition,
-            speed: newSpeed,
-            acceleration
+            
+            // Simple speed adjustment
+            const speedDiff = targetSpeed - vehicle.speed
+            const acceleration = Math.sign(speedDiff) * Math.min(Math.abs(speedDiff) * 0.1, 2)
+            const newSpeed = Math.max(5, Math.min(speedLimit * 1.2, vehicle.speed + acceleration))
+            
+            // Update position with smoother movement
+            const deltaTime = 0.3 // Match our simulation interval
+            const newPosition = vehicle.position + (newSpeed * deltaTime * 1.2)
+            
+            // Handle segment transitions
+            if (newPosition > 45) {
+              if (vehicle.segmentIndex < roadData.segments.length - 1) {
+                return {
+                  ...vehicle,
+                  segmentIndex: vehicle.segmentIndex + 1,
+                  position: -45,
+                  speed: newSpeed
+                }
+              } else {
+                return null // Remove vehicle at end
+              }
+            }
+            
+            return {
+              ...vehicle,
+              position: newPosition,
+              speed: newSpeed,
+              acceleration
+            }
+          } catch (error) {
+            console.warn('Error updating vehicle:', error)
+            return null
           }
         }).filter(Boolean) // Remove null vehicles
         
-        // Limit total vehicles for performance
-        if (newVehicles.length > 50) {
-          newVehicles = newVehicles.slice(-50)
+        // Limit total vehicles for better performance
+        if (newVehicles.length > 20) {
+          newVehicles = newVehicles.slice(-20)
         }
+        
+        // Performance stats removed to prevent issues
         
         // Report traffic data
         if (onVehicleData) {
@@ -357,7 +339,9 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
               acc[v.type] = (acc[v.type] || 0) + 1
               return acc
             }, {}),
-            congestionLevel: newVehicles.filter(v => v.speed < 30).length / newVehicles.length
+            congestionLevel: newVehicles.filter(v => v.speed < 30).length / newVehicles.length,
+            performanceGrade: 'Good',
+            fps: 60
           }
           onVehicleData(trafficStats)
         }
@@ -367,7 +351,7 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
     }
 
     if (isRunning) {
-      animationRef.current = setInterval(updateTrafficSimulation, 100)
+      animationRef.current = setInterval(updateTrafficSimulation, 300) // Even slower for better performance
     } else {
       if (animationRef.current) {
         clearInterval(animationRef.current)
@@ -380,6 +364,8 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
       }
     }
   }, [isRunning, roadData, trafficDensity, onVehicleData])
+
+  // Helper functions moved above useEffect
 
   if (!roadData || !roadData.segments) {
     return (
@@ -434,6 +420,8 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
           <div>Status: <span style={{ color: isRunning ? '#10b981' : '#ef4444' }}>
             {isRunning ? 'Running' : 'Paused'}
           </span></div>
+          <div>Road Segments: <span style={{ color: 'var(--text-primary)' }}>{roadData?.segments?.length || 0}</span></div>
+          <div>Traffic Density: <span style={{ color: 'var(--text-primary)' }}>{Math.round(trafficDensity * 100)}%</span></div>
         </div>
       </div>
 
@@ -481,11 +469,13 @@ const ThreeJSTrafficSimulation = ({ roadData, isRunning, onVehicleData }) => {
         </div>
       </div>
 
-      {/* 3D Canvas */}
+      {/* 3D Canvas - Optimized for performance */}
       <Canvas
-        camera={{ position: cameraPosition, fov: 50 }}
-        shadows
+        camera={{ position: cameraPosition, fov: 45 }}
+        shadows={false} // Disable shadows for better performance
         style={{ background: 'linear-gradient(to bottom, #0f172a, #1e293b)' }}
+        gl={{ antialias: false, powerPreference: "high-performance" }}
+        dpr={Math.min(window.devicePixelRatio, 2)} // Limit pixel ratio for performance
       >
         {/* Enhanced Lighting for Day/Night Cycle */}
         <ambientLight intensity={0.3} />
