@@ -3,49 +3,189 @@
 const RoadTemplates = ({ onTemplateSelect }) => {
   const roadTemplates = [
     {
-      id: 'highway-flyover',
-      name: 'Highway with Flyover',
-      description: 'Multi-lane highway with elevated flyover bridge in the middle',
-      icon: '🌉',
-      complexity: 'Advanced',
-      length: '5.2 km',
+      id: '6-lane-highway',
+      name: '6-Lane Highway (Bidirectional)',
+      description: 'Major highway with 3 lanes each direction separated by center median barrier',
+      icon: '🛣️',
+      complexity: 'Beginner',
+      length: '4.0 km',
       segments: [
-        { id: 1, lanes: 6, speed: 80, elevation: 0, hasMedian: true, medianType: 'barrier', length: '1.2km' },
-        { id: 2, lanes: 6, speed: 60, elevation: 0, hasMedian: true, medianType: 'barrier', length: '0.8km' },
-        { id: 3, lanes: 4, speed: 40, elevation: 25, type: 'overpass', hasBridge: true, length: '0.6km' },
-        { id: 4, lanes: 6, speed: 60, elevation: 0, hasMedian: true, medianType: 'barrier', length: '0.8km' },
-        { id: 5, lanes: 6, speed: 80, elevation: 0, hasMedian: true, medianType: 'barrier', length: '1.8km' }
+        { 
+          id: 1, 
+          lanes: 6, 
+          speed: 100, 
+          elevation: 0, 
+          hasMedian: true, 
+          medianType: 'barrier',
+          direction: 'bidirectional',
+          lanesPerDirection: 3,
+          shoulderWidth: 3,
+          length: '1.0km' 
+        },
+        { 
+          id: 2, 
+          lanes: 6, 
+          speed: 100, 
+          elevation: 0, 
+          hasMedian: true, 
+          medianType: 'barrier',
+          direction: 'bidirectional',
+          lanesPerDirection: 3,
+          shoulderWidth: 3,
+          length: '1.0km' 
+        },
+        { 
+          id: 3, 
+          lanes: 6, 
+          speed: 100, 
+          elevation: 0, 
+          hasMedian: true, 
+          medianType: 'barrier',
+          direction: 'bidirectional',
+          lanesPerDirection: 3,
+          shoulderWidth: 3,
+          length: '1.0km' 
+        },
+        { 
+          id: 4, 
+          lanes: 6, 
+          speed: 100, 
+          elevation: 0, 
+          hasMedian: true, 
+          medianType: 'barrier',
+          direction: 'bidirectional',
+          lanesPerDirection: 3,
+          shoulderWidth: 3,
+          length: '1.0km' 
+        }
       ]
     },
     {
-      id: 'city-street',
-      name: 'City Street',
-      description: 'Urban street with traffic lights and bus lanes',
+      id: '4-lane-street',
+      name: '4-Lane Street (Bidirectional)',
+      description: 'Urban arterial road with 2 lanes each direction and traffic signals',
       icon: '🏙️',
-      complexity: 'Intermediate',
-      length: '3.5 km',
+      complexity: 'Beginner',
+      length: '3.0 km',
       segments: [
-        { id: 1, lanes: 4, speed: 50, elevation: 0, hasBusLane: true, hasTrafficLights: true, length: '0.7km' },
-        { id: 2, lanes: 4, speed: 40, elevation: 0, hasBusLane: true, hasTrafficLights: true, length: '0.6km' },
-        { id: 3, lanes: 4, speed: 30, elevation: 0, hasBusLane: true, hasTrafficLights: true, length: '0.8km' },
-        { id: 4, lanes: 4, speed: 40, elevation: 0, hasBusLane: true, hasTrafficLights: true, length: '0.7km' },
-        { id: 5, lanes: 4, speed: 50, elevation: 0, hasBusLane: true, hasTrafficLights: true, length: '0.7km' }
+        { 
+          id: 1, 
+          lanes: 4, 
+          speed: 60, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.75km' 
+        },
+        { 
+          id: 2, 
+          lanes: 4, 
+          speed: 60, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.75km' 
+        },
+        { 
+          id: 3, 
+          lanes: 4, 
+          speed: 60, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.75km' 
+        },
+        { 
+          id: 4, 
+          lanes: 4, 
+          speed: 60, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.75km' 
+        }
       ]
     },
     {
-      id: 'cloverleaf-junction',
-      name: 'Cloverleaf Junction',
-      description: 'Complex highway interchange with multiple elevation levels',
-      icon: '🍀',
-      complexity: 'Expert',
-      length: '2.8 km',
+      id: '4-lane-bus-street',
+      name: '4-Lane Street with Bus Lanes',
+      description: 'Transit-oriented street with dedicated center bus lanes and regular traffic lanes',
+      icon: '🚌',
+      complexity: 'Intermediate',
+      length: '3.2 km',
       segments: [
-        { id: 1, lanes: 6, speed: 80, elevation: 0, hasMedian: true, medianType: 'barrier', length: '0.5km' },
-        { id: 2, lanes: 4, speed: 60, elevation: 15, type: 'overpass', hasBridge: true, length: '0.4km' },
-        { id: 3, lanes: 3, speed: 40, elevation: 30, type: 'overpass', hasBridge: true, length: '0.3km' },
-        { id: 4, lanes: 3, speed: 40, elevation: 30, type: 'overpass', hasBridge: true, length: '0.3km' },
-        { id: 5, lanes: 4, speed: 60, elevation: 15, type: 'overpass', hasBridge: true, length: '0.4km' },
-        { id: 6, lanes: 6, speed: 80, elevation: 0, hasMedian: true, medianType: 'barrier', length: '0.9km' }
+        { 
+          id: 1, 
+          lanes: 4, 
+          speed: 50, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasBusLane: true,
+          busLaneType: 'center',
+          busLaneWidth: 3.5,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.8km' 
+        },
+        { 
+          id: 2, 
+          lanes: 4, 
+          speed: 50, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasBusLane: true,
+          busLaneType: 'center',
+          busLaneWidth: 3.5,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.8km' 
+        },
+        { 
+          id: 3, 
+          lanes: 4, 
+          speed: 50, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasBusLane: true,
+          busLaneType: 'center',
+          busLaneWidth: 3.5,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.8km' 
+        },
+        { 
+          id: 4, 
+          lanes: 4, 
+          speed: 50, 
+          elevation: 0, 
+          hasMedian: false,
+          direction: 'bidirectional',
+          lanesPerDirection: 2,
+          hasBusLane: true,
+          busLaneType: 'center',
+          busLaneWidth: 3.5,
+          hasTrafficLights: true,
+          hasSidewalks: true,
+          length: '0.8km' 
+        }
       ]
     }
   ]
